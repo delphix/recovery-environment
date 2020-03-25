@@ -9,11 +9,11 @@ function die
 }
 
 [[ $# -eq 2 ]] || die "Illegal number of parameters"
+[[ -f $1 ]] || die "No such file: $1"
 
-ldd $1 2>/dev/null | while read line;
+(ldd $1 2>/dev/null || true) | while read line;
 do
     if ! echo "$line" | grep "=>" >/dev/null 2>/dev/null ; then
-	echo $line
 	continue
     fi
     dep=$(echo "$line" | sed 's/.*=> \(.*\) (.*/\1/')
@@ -21,3 +21,5 @@ do
     sudo mkdir -p $2/$dn
     sudo rsync -aL $dep $2/$dep
 done
+
+exit 0
