@@ -21,7 +21,7 @@ Please read [CONTRIBUTING.md](https://github.com/delphix/.github/blob/master/CON
 ## Authors
 
 * **Paul Dagnelie** - *Initial work* - [Delphix](https://github.com/delphix)
-* [SysRescCD Project](https://gitlab.com/fdupoux/sysresccd-src/-/tree/master) - *Init System*
+* [mkinitcpio](https://github.com/archlinux/mkinitcpio) - *Init System*
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
@@ -32,5 +32,5 @@ Portions are licensed under GPLv2
 
 ## Acknowledgments
 
-* SysRescCD for creating the init automation that this was initially developed from.
+* mkinitcpio for creating the init automation that this was initially developed from.
 

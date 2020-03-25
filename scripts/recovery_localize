@@ -1,0 +1,35 @@
+#!/bin/bash
+
+function die
+{
+    echo "$1" >&2
+    exit 1
+}
+
+[[ $# -eq 1 ]] || die "Illegal number of parameters"
+target="$1"
+workdir=$(mktemp -d)
+
+cd $workdir
+sudo chown root .
+sudo chmod 0755 .
+cat $target | gunzip | sudo cpio -idmv
+
+mknod -m 600 /dev/console c 5 1
+
+modpath="/lib/modules/$(uname -r)/"
+sudo mkdir -p ./$modpath/kernel/drivers/
+sudo rsync -a /$modpath/modules* ./$modpath/
+sudo rsync -a /$modpath/vdso ./$modpath/
+sudo cp -r /$modpath/kernel/drivers/{char,misc,tty,net} ./$modpath/kernel/drivers/
+
+if [[ $(uname -r) =~ .*gcp ]]
+then
+    sudo rsync -a /$modpath/kernel/net/ ./$modpath/kernel/net/
+fi
+
+sudo rm -rf ./$modpath/kernel/drivers/net/wireless #TODO expand?
+sudo cp -r /lib/modules-load.d ./lib/
+sudo cp -r /lib/udev ./lib/
+
+sudo find . -print0 | sudo cpio --verbose --null --create --format=newc | gzip -7 | sudo tee $target >/dev/null

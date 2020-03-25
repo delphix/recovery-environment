@@ -1,0 +1,36 @@
+#!/bin/sh
+
+udevd_running=0
+mount_handler=default_mount_handler
+init=/sbin/init
+rd_logmask=0
+
+/bin/busybox --install -s
+
+. /init_functions
+
+mount_setup
+
+# parse the kernel command line
+parse_cmdline </proc/cmdline
+
+# setup logging as early as possible
+rdlogger_start
+
+for d in ${disablehooks//,/ }; do
+    [ -e "/hooks/$d" ] && chmod 644 "/hooks/$d"
+done
+
+. /config
+
+run_hookfunctions 'run_earlyhook' 'early hook' $EARLYHOOKS
+
+if [ -n "$earlymodules$MODULES" ]; then
+    modprobe -qab ${earlymodules//,/ } $MODULES
+fi
+
+run_hookfunctions 'run_hook' 'hook' $HOOKS
+
+launch_interactive_shell
+
+# vim: set ft=sh ts=4 sw=4 et:

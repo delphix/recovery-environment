@@ -1,0 +1,10 @@
+#!/bin/bash
+
+run_hook() {
+    mkdir /dev/pts
+    mount -t devpts /dev/pts /dev/pts
+    dropbear -E
+    sshd_running=1
+}
+
+# vim: set ft=sh ts=4 sw=4 et:

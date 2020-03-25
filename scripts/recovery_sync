@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+function die
+{
+    echo "$1" >&2
+    exit 1
+}
+
+[[ $# -eq 1 ]] || die "Illegal number of parameters"
+target="$1"
+workdir=$(mktemp -d)
+
+cd $workdir
+sudo chown root .
+sudo chmod 0755 .
+cat $target | gunzip | sudo cpio -idmv
+
+sudo rsync -a /run/systemd/network/ etc/systemd/network
+sudo mkdir -p etc/dropbear
+for fmt in $(ls /etc/ssh/*key | sed 's/.*host_\(.*\)_key/\1/'); do
+    [[ "$fmt" == "ed25519" ]] && continue
+    sudo ./bin/dropbearconvert openssh dropbear /etc/ssh/ssh_host_${fmt}_key etc/dropbear/dropbear_${fmt}_host_key
+done
+
+sudo rsync -a /etc/machine-id etc/
+sudo rsync -a /export/home/delphix/.ssh export/home/delphix/
+
+sudo find . -print0 | sudo cpio --verbose --null --create --format=newc | gzip -7 | sudo tee $target >/dev/null
+
