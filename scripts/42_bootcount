@@ -1,0 +1,14 @@
+#!/bin/sh
+exec tail -n +3 $0
+
+if [ x"${bootcount}" = x0 ]; then
+  set bootcount=1
+elif [ x"${bootcount}" = x1 ]; then
+  set bootcount=2
+elif [ x"${bootcount}" = x2 ]; then
+  set bootcount=3
+elif [ x"${bootcount}" = x3 ]; then
+  set default="2"
+  echo "Setting!"
+fi
+save_env bootcount

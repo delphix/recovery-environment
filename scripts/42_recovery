@@ -1,0 +1,24 @@
+#! /bin/sh
+set -e
+
+. /usr/lib/grub/grub-mkconfig_lib
+
+cat <<EOF
+menuentry 'Recovery Environment' --class ubuntu --class gnu-linux --class gnu --class os --id 'recovery' {
+    recordfail
+    load_video
+    insmod gzio
+    if [ x$grub_platform = xxen ]; then insmod xzio; insmod lzopio; fi
+    insmod part_gpt
+    set root='hd0,gpt1'
+EOF
+prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | grub_add_tab
+
+root=$(findmnt / | grep '^/' | awk '{print $2}' | sed 's@^rpool/@@')
+
+cat <<EOF
+    echo    'Loading recovery environment'
+    linux   /${root}@/boot/vmlinuz-$(uname -r)  root=ZFS=rpool/$root ro single nomodeset console=tty0 console=ttyS0,38400n8 break=y
+    initrd  /${root}@/boot/recovery.img
+}
+EOF

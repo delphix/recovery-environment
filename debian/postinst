@@ -6,8 +6,7 @@ function die
     exit 1
 }
 
-[[ $# -eq 1 ]] || die "Illegal number of parameters"
-target="$1"
+target="/boot/recovery.img"
 workdir=$(mktemp -d)
 
 cd $workdir

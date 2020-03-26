@@ -5,12 +5,14 @@ all:
 	./scripts/stage1.sh $(CURDIR)/bin/recovery.img
 
 install:
-	install -D scripts/recovery_localize \
-		$(DESTDIR)$(prefix)/bin/recovery_localize
 	install -D scripts/recovery_sync \
 		$(DESTDIR)$(prefix)/bin/recovery_sync
 	install -D bin/recovery.img \
 		$(DESTDIR)/boot/recovery.img
+	install -D scripts/42_bootcount \
+		$(DESTDIR)/etc/grub.d/42_bootcount
+	install -D scripts/42_recovery \
+		$(DESTDIR)/etc/grub.d/42_recovery
 
 clean:
 	rm -rf bin/recovery.img
@@ -19,8 +21,9 @@ clean:
 distclean: clean
 
 uninstall:
-	-rm -f $(DESTDIR)$(prefix)/bin/recovery_localize
 	-rm -f $(DESTDIR)$(prefix)/bin/recovery_sync
 	-rm -f $(DESTDIR)/boot/recovery.img
+	-rm -f $(DESTDIR)/etc/grub.d/42_bootcount
+	-rm -f $(DESTDIR)/etc/grub.d/42_recovery
 
 .PHONY: all install clean distclean uninstall
