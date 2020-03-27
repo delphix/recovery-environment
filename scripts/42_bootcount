@@ -9,6 +9,5 @@ elif [ x"${bootcount}" = x2 ]; then
   set bootcount=3
 elif [ x"${bootcount}" = x3 ]; then
   set default="2"
-  echo "Setting!"
 fi
 save_env bootcount

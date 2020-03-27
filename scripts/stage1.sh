@@ -55,4 +55,4 @@ sudo rsync -a /etc/dhcp/ $img/etc/dhcp/
 sudo mkdir -p $img/etc/dropbear
 
 cd $img
-sudo find . -print0 | sudo cpio --verbose --null --create --format=newc | gzip -7 | sudo tee $target > /dev/null
+sudo find . -print0 | sudo cpio --verbose --null --create --format=newc | gzip -7 | sudo tee $target >/dev/null 2>/dev/null
