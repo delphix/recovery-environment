@@ -4,8 +4,8 @@ set -euxo pipefail
 
 function die
 {
-    echo "$1" >&2
-    exit 1
+	echo "$1" >&2
+	exit 1
 }
 
 [[ $# -eq 1 ]] || die "Illegal number of parameters"
@@ -32,9 +32,9 @@ sudo mkdir -p $img/bin/
 for file in /bin/busybox /bin/kmod /bin/systemd-tmpfiles /bin/udevadm \
 	/lib/systemd/systemd-networkd /lib/systemd/systemd-udevd \
 	/usr/sbin/dropbear /usr/lib/dropbear/dropbearconvert; do
-    sudo mkdir -p $img/$(dirname $file)
-    sudo rsync -a $file $img/$file
-    ./get_deps $img/$file $img
+	sudo mkdir -p $img/$(dirname $file)
+	sudo rsync -a $file $img/$file
+	./get_deps $img/$file $img
 done
 sudo ln -rs $img/bin/busybox $img/bin/sh
 
