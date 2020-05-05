@@ -4,7 +4,7 @@ Author: <insert document author here>
 Abstract: This manual describes what recovery-environment is
  and how it can be used to
  manage online manuals on Debian systems.
-Section: unknown
+Section: misc
 
 Format: debiandoc-sgml
 Files: /usr/share/doc/recovery-environment/recovery-environment.sgml.gz

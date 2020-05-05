@@ -27,11 +27,10 @@ uninstall:
 	-rm -f $(DESTDIR)/etc/grub.d/42_recovery
 
 shellcheck:
-        shellcheck --exclude=SC1090,SC1091 \
-                $$(find . -type f -name '*.sh')
+	shellcheck --exclude=SC1090,SC1091 \
+		$$(find . -type f -name '*.sh')
 
 shfmtcheck:
-        ! shfmt -d $$(find . -type f -name '*.sh') | grep .
-
+	! shfmt -d $$(find . -type f -name '*.sh') | grep .
 
 .PHONY: all install clean distclean uninstall shellcheck shfmtcheck

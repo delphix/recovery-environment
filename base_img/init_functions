@@ -10,7 +10,7 @@ msg () {
     [ "${quiet}" != "y" ] && echo $@
 }
 err () {
-    echo "ERROR: $@"
+    echo "ERROR: $@" >&2
 }
 
 log_kmsg() {
