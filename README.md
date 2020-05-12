@@ -33,4 +33,3 @@ Portions are licensed under GPLv2
 ## Acknowledgments
 
 * mkinitcpio for creating the init automation that this was initially developed from.
-

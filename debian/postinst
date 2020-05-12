@@ -10,29 +10,33 @@ target="/boot/recovery.img"
 workdir=$(mktemp -d)
 
 cd $workdir
-sudo chown root .
-sudo chmod 0755 .
-cat $target | gunzip | sudo cpio -idmv
+chown root .
+chmod 0755 .
+cat $target | gunzip | cpio -idmv
 
 mknod -m 600 ./dev/console c 5 1
 
 modpath="/lib/modules/$(uname -r)/"
-sudo mkdir -p ./$modpath/kernel/drivers/
-sudo rsync -a /$modpath/modules* ./$modpath/
-sudo rsync -a /$modpath/vdso ./$modpath/
-sudo cp -r /$modpath/kernel/drivers/{char,misc,tty,net} ./$modpath/kernel/drivers/
+mkdir -p ./$modpath/kernel/drivers/
+rsync -a /$modpath/modules* ./$modpath/
+rsync -a /$modpath/vdso ./$modpath/
+cp -r /$modpath/kernel/drivers/{char,misc,tty,net} ./$modpath/kernel/drivers/
 
 if [[ $(uname -r) =~ .*gcp ]]
 then
-    sudo rsync -a /$modpath/kernel/net/ ./$modpath/kernel/net/
+    rsync -a /$modpath/kernel/net/ ./$modpath/kernel/net/
 fi
 
-sudo rm -rf ./$modpath/kernel/drivers/net/wireless #TODO expand?
-sudo cp -r /lib/modules-load.d ./lib/
-sudo cp -r /lib/udev ./lib/
+rm -rf ./$modpath/kernel/drivers/net/wireless #TODO expand?
+cp -r /lib/modules-load.d ./lib/
+cp -r /lib/udev ./lib/
 
-sudo find . -print0 | sudo cpio --verbose --null --create --format=newc | gzip -7 | sudo tee $target >/dev/null 2>/dev/null
+rsync -a /etc/{group,passwd,shadow}{,-} ./etc/
+sed -i 's@/bin/bash@/bin/sh@g' $img/etc/passwd{,-}
+sed -i 's@/opt/delphix/server/bin/supportlogin@/bin/sh@g' $img/etc/passwd{,-}
 
-sudo mount -t zfs rpool/grub /mnt
-sudo /usr/sbin/grub-mkconfig -o /mnt/boot/grub/grub.cfg
-sudo umount /mnt
+find . -print0 | cpio --verbose --null --create --format=newc | gzip -7 | tee $target >/dev/null 2>/dev/null
+
+mount -t zfs rpool/grub /mnt
+/usr/sbin/grub-mkconfig -o /mnt/boot/grub/grub.cfg
+umount /mnt

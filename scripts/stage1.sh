@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# This script is run at package build time to create the base recovery
+# environment image. This image is then modified by the postinst script when
+# the package is installed, and the recovery_sync script is used on the
+# destination system to keep it up to date with configuration changes.
+#
 
 set -euxo pipefail
 
@@ -18,41 +24,38 @@ base="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Set up working directory
 #
 cd $workdir
-sudo mkdir img
-sudo chmod 0755 img
+mkdir img
+chmod 0755 img
 
 #
 # Perform installation process
 #
 cd $base
-sudo rsync -a ../base_img/ $img/
+rsync -a ../base_img/ $img/
 
-sudo mkdir -p $img/bin/
+mkdir -p $img/bin/
 
 for file in /bin/busybox /bin/kmod /bin/systemd-tmpfiles /bin/udevadm \
 	/lib/systemd/systemd-networkd /lib/systemd/systemd-udevd \
 	/usr/sbin/dropbear /usr/lib/dropbear/dropbearconvert; do
-	sudo mkdir -p $img/$(dirname $file)
-	sudo rsync -a $file $img/$file
+	mkdir -p $img/$(dirname $file)
+	rsync -a $file $img/$file
 	./get_deps $img/$file $img
 done
-sudo ln -rs $img/bin/busybox $img/bin/sh
+ln -rs $img/bin/busybox $img/bin/sh
 
-sudo rsync -aL /lib64/ld-linux-x86-64.so.2 $img/lib64/
-sudo mkdir -p $img/lib/x86_64-linux-gnu/
+rsync -aL /lib64/ld-linux-x86-64.so.2 $img/lib64/
+mkdir -p $img/lib/x86_64-linux-gnu/
 ls $img/lib/x86_64-linux-gnu/
-sudo rsync -aL /lib/x86_64-linux-gnu/libnss* $img/lib/x86_64-linux-gnu/
+rsync -aL /lib/x86_64-linux-gnu/libnss* $img/lib/x86_64-linux-gnu/
 ls $img/lib/x86_64-linux-gnu/
-sudo rsync -a /lib/modprobe.d $img/lib/
+rsync -a /lib/modprobe.d $img/lib/
 
-sudo rsync -a /etc/{group,passwd,shadow}{,-} $img/etc/
-sudo sed -i 's@/bin/bash@/bin/sh@g' $img/etc/passwd{,-}
-sudo sed -i 's@/opt/delphix/server/bin/supportlogin@/bin/sh@g' $img/etc/passwd{,-}
-sudo rsync -a /etc/{shells,nsswitch.conf} $img/etc/
-sudo mkdir -p $img/etc/systemd/network
-sudo rsync -a /etc/network/ $img/etc/network/
-sudo rsync -a /etc/dhcp/ $img/etc/dhcp/
-sudo mkdir -p $img/etc/dropbear
+rsync -a /etc/{shells,nsswitch.conf} $img/etc/
+mkdir -p $img/etc/systemd/network
+rsync -a /etc/network/ $img/etc/network/
+rsync -a /etc/dhcp/ $img/etc/dhcp/
+mkdir -p $img/etc/dropbear
 
 cd $img
-sudo find . -print0 | sudo cpio --verbose --null --create --format=newc | gzip -7 | sudo tee $target >/dev/null 2>/dev/null
+find . -print0 | cpio --verbose --null --create --format=newc | gzip -7 | tee $target >/dev/null 2>/dev/null

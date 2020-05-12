@@ -18,8 +18,8 @@ do
     fi
     dep=$(echo "$line" | sed 's/.*=> \(.*\) (.*/\1/')
     dn=$(dirname $dep)
-    sudo mkdir -p $2/$dn
-    sudo rsync -aL $dep $2/$dep
+    mkdir -p $2/$dn
+    rsync -aL $dep $2/$dep
 done
 
 exit 0
