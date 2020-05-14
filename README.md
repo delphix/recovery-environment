@@ -2,6 +2,8 @@
 
 This project implements a debian package that allows for the easy creation, installation, and updating of a network-accessible recovery environment.
 
+The overall structure of the project is simple, though not entirely obvious. The stage1 script is the primary build script; it constructs the recovery environment package, which can then be installed on any system with a compatible architecture. The debian/postinst script functions as stage 2; it runs when the package is installed on the target system, and copied system-specific information into the recovery environment. Finally, there is the recovery_sync script. This script is intended to be run by automation on the target system whenever a significant configuratioin change occurs, and will copy this config data into the recovery environment so that it remains accessible over the network.
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.

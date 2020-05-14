@@ -20,6 +20,7 @@ cat $target | gunzip | cpio -idmv
 rsync -a /run/systemd/network/ etc/systemd/network
 mkdir -p etc/dropbear
 for fmt in $(ls /etc/ssh/*key | sed 's/.*host_\(.*\)_key/\1/'); do
+    # Unfortunately, dropbear doesn't support ed25519 keys.
     [[ "$fmt" == "ed25519" ]] && continue
     ./bin/dropbearconvert openssh dropbear /etc/ssh/ssh_host_${fmt}_key etc/dropbear/dropbear_${fmt}_host_key
 done

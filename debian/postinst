@@ -1,11 +1,5 @@
 #!/bin/bash
 
-function die
-{
-    echo "$1" >&2
-    exit 1
-}
-
 target="/boot/recovery.img"
 workdir=$(mktemp -d)
 
@@ -22,12 +16,12 @@ rsync -a /$modpath/modules* ./$modpath/
 rsync -a /$modpath/vdso ./$modpath/
 cp -r /$modpath/kernel/drivers/{char,misc,tty,net} ./$modpath/kernel/drivers/
 
-if [[ $(uname -r) =~ .*gcp ]]
+if [[ $(cat /var/lib/delphix-appliance/platform) == "gcp" ]]
 then
     rsync -a /$modpath/kernel/net/ ./$modpath/kernel/net/
 fi
 
-rm -rf ./$modpath/kernel/drivers/net/wireless #TODO expand?
+rm -rf ./$modpath/kernel/drivers/net/wireless
 cp -r /lib/modules-load.d ./lib/
 cp -r /lib/udev ./lib/
 
@@ -40,3 +34,6 @@ find . -print0 | cpio --verbose --null --create --format=newc | gzip -7 | tee $t
 mount -t zfs rpool/grub /mnt
 /usr/sbin/grub-mkconfig -o /mnt/boot/grub/grub.cfg
 umount /mnt
+
+cd /
+rm -rf $workdir
