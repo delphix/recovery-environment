@@ -14,6 +14,21 @@ function die
 	exit 1
 }
 
+function get_deps
+{
+	(ldd $1 2>/dev/null || true) | while read line;
+	do
+		if ! echo "$line" | grep "=>" &>/dev/null ; then
+			continue
+		fi
+		dep=$(echo "$line" | sed 's/.*=> \(.*\) (.*/\1/')
+		dn=$(dirname $dep)
+		mkdir -p $2/$dn
+		rsync -aL $dep $2/$dep
+	done
+}
+
+
 [[ $# -eq 1 ]] || die "Illegal number of parameters"
 target="$1"
 workdir=$(mktemp -d)
@@ -27,6 +42,14 @@ cd $workdir
 mkdir img
 chmod 0755 img
 
+apt-get download dropbear-bin=2017.75-3build1 \
+	busybox-static=1:1.27.2-2ubuntu3.2 \
+	kmod=24-1ubuntu3.4 \
+	systemd=237-3ubuntu10.40 \
+	udev=237-3ubuntu10.40 \
+	libc6=2.27-3ubuntu1
+for file in `ls *.deb`; do dpkg-deb -x $file .; done
+
 #
 # Perform installation process
 #
@@ -39,22 +62,17 @@ for file in /bin/busybox /bin/kmod /bin/systemd-tmpfiles /bin/udevadm \
 	/lib/systemd/systemd-networkd /lib/systemd/systemd-udevd \
 	/usr/sbin/dropbear /usr/lib/dropbear/dropbearconvert; do
 	mkdir -p $img/$(dirname $file)
-	rsync -a $file $img/$file
-	./get_deps $img/$file $img
+	rsync -a $workdir/$file $img/$file
+	get_deps $img/$file $img
 done
 ln -rs $img/bin/busybox $img/bin/sh
 
-rsync -aL /lib64/ld-linux-x86-64.so.2 $img/lib64/
+rsync -aL $workdir/lib64/ld-linux-x86-64.so.2 $img/lib64/
 mkdir -p $img/lib/x86_64-linux-gnu/
-ls $img/lib/x86_64-linux-gnu/
-rsync -aL /lib/x86_64-linux-gnu/libnss* $img/lib/x86_64-linux-gnu/
-ls $img/lib/x86_64-linux-gnu/
-rsync -a /lib/modprobe.d $img/lib/
+rsync -aL $workdir/lib/x86_64-linux-gnu/libnss* $img/lib/x86_64-linux-gnu/
+rsync -a $workdir/lib/modprobe.d $img/lib/
 
-rsync -a /etc/{shells,nsswitch.conf} $img/etc/
-mkdir -p $img/etc/systemd/network
-rsync -a /etc/network/ $img/etc/network/
-rsync -a /etc/dhcp/ $img/etc/dhcp/
+mkdir -p $img/etc/{systemd/network,network,dhcp}
 mkdir -p $img/etc/dropbear
 
 cd $img

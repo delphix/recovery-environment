@@ -1,4 +1,4 @@
-prefix = /usr/
+prefix = /usr
 
 all:
 	mkdir bin/
@@ -27,10 +27,9 @@ uninstall:
 	-rm -f $(DESTDIR)/etc/grub.d/42_recovery
 
 shellcheck:
-	shellcheck --exclude=SC1090,SC1091 \
-		$$(find . -type f -name '*.sh')
+	shellcheck --exclude=SC1090,SC1091 $(shfmt -f .)
 
 shfmtcheck:
-	! shfmt -d $$(find . -type f -name '*.sh') | grep .
+	shfmt -d .
 
 .PHONY: all install clean distclean uninstall shellcheck shfmtcheck

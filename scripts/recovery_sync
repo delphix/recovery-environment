@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#
+# This script will sync host keys, authorized public keys, and networking
+# configuration from the running sytem to the recovery environment. It should
+# be run whenever any of these things change, to ensure that the recovery
+# environment remains accessible in the event of a serious system problem.
+#
+
 set -euxo pipefail
 
 function die
