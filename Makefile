@@ -27,7 +27,7 @@ uninstall:
 	-rm -f $(DESTDIR)/etc/grub.d/42_recovery
 
 shellcheck:
-	shellcheck --exclude=SC1090,SC1091 $(shfmt -f .)
+	shellcheck --exclude=SC1090,SC1091 $$(shfmt -f .)
 
 shfmtcheck:
 	shfmt -d .

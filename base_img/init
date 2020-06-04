@@ -1,9 +1,11 @@
 #!/bin/sh
+#
+# shellcheck disable=SC2039
+# shellcheck disable=SC2154
 
-udevd_running=0
-mount_handler=default_mount_handler
-init=/sbin/init
-rd_logmask=0
+export udevd_running=0
+export mount_handler=default_mount_handler
+export rd_logmask=0
 
 /bin/busybox --install -s
 
@@ -18,18 +20,18 @@ parse_cmdline </proc/cmdline
 rdlogger_start
 
 for d in ${disablehooks//,/ }; do
-    [ -e "/hooks/$d" ] && chmod 644 "/hooks/$d"
+	[ -e "/hooks/$d" ] && chmod 644 "/hooks/$d"
 done
 
 . /config
 
-run_hookfunctions 'run_earlyhook' 'early hook' $EARLYHOOKS
+run_hookfunctions 'run_earlyhook' 'early hook' "$EARLYHOOKS"
 
 if [ -n "$earlymodules$MODULES" ]; then
-    modprobe -qab ${earlymodules//,/ } $MODULES
+	modprobe -qab "${earlymodules//,/ }" "$MODULES"
 fi
 
-run_hookfunctions 'run_hook' 'hook' $HOOKS
+run_hookfunctions 'run_hook' 'hook' "$HOOKS"
 
 launch_interactive_shell
 

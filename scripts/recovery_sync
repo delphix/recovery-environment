@@ -9,30 +9,29 @@
 
 set -euxo pipefail
 
-function die
-{
-    echo "$1" >&2
-    exit 1
+function die() {
+	echo "$1" >&2
+	exit 1
 }
 
 [[ $# -eq 1 ]] || die "Illegal number of parameters"
 target="$1"
 workdir=$(mktemp -d)
 
-cd $workdir
+cd "$workdir"
 chown root .
 chmod 0755 .
-cat $target | gunzip | cpio -idmv
+gunzip <"$target" | cpio -idmv
 
 rsync -a /run/systemd/network/ etc/systemd/network
 mkdir -p etc/dropbear
-for fmt in $(ls /etc/ssh/*key | sed 's/.*host_\(.*\)_key/\1/'); do
-    # Unfortunately, dropbear doesn't support ed25519 keys.
-    [[ "$fmt" == "ed25519" ]] && continue
-    ./bin/dropbearconvert openssh dropbear /etc/ssh/ssh_host_${fmt}_key etc/dropbear/dropbear_${fmt}_host_key
+for fmt in $(find /etc/ssh -name \*key | sed 's/.*host_\(.*\)_key/\1/'); do
+	# Unfortunately, dropbear doesn't support ed25519 keys.
+	[[ "$fmt" == "ed25519" ]] && continue
+	./bin/dropbearconvert openssh dropbear "/etc/ssh/ssh_host_${fmt}_key" "etc/dropbear/dropbear_${fmt}_host_key"
 done
 
 rsync -a /etc/machine-id etc/
 rsync -a /export/home/delphix/.ssh export/home/delphix/
 
-find . -print0 | cpio --verbose --null --create --format=newc | gzip -7 | tee $target >/dev/null
+find . -print0 | cpio --verbose --null --create --format=newc | gzip -7 | tee "$target" >/dev/null
