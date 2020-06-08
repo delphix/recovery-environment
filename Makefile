@@ -13,6 +13,8 @@ install:
 		$(DESTDIR)/etc/grub.d/42_bootcount
 	install -D scripts/42_recovery \
 		$(DESTDIR)/etc/grub.d/42_recovery
+	install -m 0644 -D scripts/delphix-bootcount.service \
+		$(DESTDIR)/lib/systemd/system/delphix-bootcount.service
 
 clean:
 	rm -rf bin/recovery.img
@@ -25,6 +27,7 @@ uninstall:
 	-rm -f $(DESTDIR)/boot/recovery.img
 	-rm -f $(DESTDIR)/etc/grub.d/42_bootcount
 	-rm -f $(DESTDIR)/etc/grub.d/42_recovery
+	-rm -f $(DESTDIR)/lib/systemd/system/delphix-bootcount.service
 
 shellcheck:
 	shellcheck --exclude=SC1090,SC1091 $$(shfmt -f .)

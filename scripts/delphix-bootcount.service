@@ -1,0 +1,16 @@
+#
+# Copyright (c) 2020 by Delphix. All rights reserved.
+#
+
+[Unit]
+Descrption=Delphix bootcount reset service
+Requires=ssh.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/bin/sleep 300
+ExecStart=/usr/bin/grub-editenv /boot/grub/grubenv set bootcount=0
+
+[Install]
+WantedBy=delphix.target

@@ -2,6 +2,7 @@
 #
 # shellcheck disable=SC2039
 # shellcheck disable=SC2154
+# shellcheck disable=SC2086
 
 export udevd_running=0
 export mount_handler=default_mount_handler
@@ -25,13 +26,13 @@ done
 
 . /config
 
-run_hookfunctions 'run_earlyhook' 'early hook' "$EARLYHOOKS"
+run_hookfunctions 'run_earlyhook' 'early hook' $EARLYHOOKS
 
 if [ -n "$earlymodules$MODULES" ]; then
 	modprobe -qab "${earlymodules//,/ }" "$MODULES"
 fi
 
-run_hookfunctions 'run_hook' 'hook' "$HOOKS"
+run_hookfunctions 'run_hook' 'hook' $HOOKS
 
 launch_interactive_shell
 

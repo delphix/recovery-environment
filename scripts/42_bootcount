@@ -12,6 +12,7 @@ elif [ x"${bootcount}" = x1 ]; then
 elif [ x"${bootcount}" = x2 ]; then
 	set bootcount=3
 elif [ x"${bootcount}" = x3 ]; then
-	set default="2"
+	set default=2
+	set bootcount=0
 fi
 save_env bootcount

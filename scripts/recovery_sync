@@ -2,7 +2,7 @@
 
 #
 # This script will sync host keys, authorized public keys, and networking
-# configuration from the running sytem to the recovery environment. It should
+# configuration from the running system to the recovery environment. It should
 # be run whenever any of these things change, to ensure that the recovery
 # environment remains accessible in the event of a serious system problem.
 #
@@ -25,13 +25,19 @@ gunzip <"$target" | cpio -idmv
 
 rsync -a /run/systemd/network/ etc/systemd/network
 mkdir -p etc/dropbear
+#
+# Dropbear reads keys in a different format from the normal ssh server. We
+# use dropbearconvert to translate them.
+#
 for fmt in $(find /etc/ssh -name \*key | sed 's/.*host_\(.*\)_key/\1/'); do
 	# Unfortunately, dropbear doesn't support ed25519 keys.
 	[[ "$fmt" == "ed25519" ]] && continue
-	./bin/dropbearconvert openssh dropbear "/etc/ssh/ssh_host_${fmt}_key" "etc/dropbear/dropbear_${fmt}_host_key"
+	LD_LIBRARY_PATH="./usr/lib/x86_64-linux-gnu" ./usr/lib/dropbear/dropbearconvert \
+		openssh dropbear "/etc/ssh/ssh_host_${fmt}_key" \
+		"etc/dropbear/dropbear_${fmt}_host_key"
 done
 
 rsync -a /etc/machine-id etc/
-rsync -a /export/home/delphix/.ssh export/home/delphix/
+rsync -a --relative /export/home/delphix/.ssh .
 
-find . -print0 | cpio --verbose --null --create --format=newc | gzip -7 | tee "$target" >/dev/null
+find . -print0 | cpio --verbose --null --create --format=newc | gzip -7 >"$target"
