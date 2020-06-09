@@ -44,7 +44,6 @@ function get_deps() {
 		mkdir -p "$output/$dn"
 		rsync -aL "$workdir/$dep" "$output/$dep"
 	done
-	unset LD_LIBRARY_PATH
 }
 
 [[ $# -eq 1 ]] || die "Illegal number of parameters"

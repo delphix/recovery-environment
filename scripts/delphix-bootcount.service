@@ -5,6 +5,7 @@
 [Unit]
 Descrption=Delphix bootcount reset service
 Requires=ssh.service
+After=ssh.service
 
 [Service]
 Type=oneshot
