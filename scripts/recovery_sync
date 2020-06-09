@@ -21,7 +21,7 @@ workdir=$(mktemp -d)
 cd "$workdir"
 chown root .
 chmod 0755 .
-gunzip <"$target" | cpio -idmv
+gunzip <"$target" | cpio -idm
 
 rsync -a /run/systemd/network/ etc/systemd/network
 mkdir -p etc/dropbear
@@ -40,4 +40,4 @@ done
 rsync -a /etc/machine-id etc/
 rsync -a --relative /export/home/delphix/.ssh .
 
-find . -print0 | cpio --verbose --null --create --format=newc | gzip -7 >"$target"
+find . -print0 | cpio --null --create --format=newc | gzip -7 >"$target"

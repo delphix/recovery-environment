@@ -11,7 +11,7 @@ workdir=$(mktemp -d)
 cd "$workdir" || die "workdir doesn't exist"
 chown root .
 chmod 0755 .
-gunzip <"$target" | cpio -idmv
+gunzip <"$target" | cpio -idm
 
 mknod -m 600 ./dev/console c 5 1
 
@@ -36,7 +36,7 @@ rsync -a /etc/dhcp/ ./etc/dhcp/
 sed -i 's@/bin/bash@/bin/sh@g' ./etc/passwd{,-}
 sed -i 's@/opt/delphix/server/bin/supportlogin@/bin/sh@g' ./etc/passwd{,-}
 
-find . -print0 | cpio --verbose --null --create --format=newc | gzip -7 >"$target" 2>/dev/null
+find . -print0 | cpio --null --create --format=newc | gzip -7 >"$target" 2>/dev/null
 
 mount -t zfs rpool/grub /mnt
 /usr/sbin/grub-mkconfig -o /mnt/boot/grub/grub.cfg

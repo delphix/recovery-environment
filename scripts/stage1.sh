@@ -98,4 +98,4 @@ mkdir -p "$img"/etc/{systemd/network,network,dhcp}
 mkdir -p "$img/etc/dropbear"
 
 cd "$img"
-find . -print0 | cpio --verbose --null --create --format=newc | gzip -7 >"$target" 2>/dev/null
+find . -print0 | cpio --null --create --format=newc | gzip -7 >"$target" 2>/dev/null
