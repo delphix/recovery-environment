@@ -36,12 +36,9 @@ function get_deps() {
 		fi
 		local dep=""
 		dep=$(echo "$line" | sed 's/.*=> \(.*\) (.*/\1/')
-		if [[ "$dep" =~ $workdir ]]; then
-			dep=$(realpath -s --relative-to="$workdir" $dep)
 
-		else
-			dep=".$dep"
-		fi
+		[[ "$dep" =~ $workdir ]] || die "ldd found dependency outside of workdir"
+		dep=$(realpath -s --relative-to="$workdir" $dep)
 		local dn=""
 		dn=$(dirname "$dep")
 		mkdir -p "$output/$dn"
