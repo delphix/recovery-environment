@@ -64,10 +64,7 @@ PACKAGES="dropbear-bin \
 	busybox-static \
 	kmod \
 	systemd \
-	udev \
-	libc6 \
-	libtommath1 \
-	libtomcrypt1"
+	udev "
 
 apt-get download $(apt-cache depends --recurse --no-recommends --no-suggests \
 	--no-conflicts --no-breaks --no-replaces --no-enhances \
