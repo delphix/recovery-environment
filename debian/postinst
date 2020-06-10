@@ -30,6 +30,7 @@ cp -r /lib/modules-load.d ./lib/
 cp -r /lib/udev ./lib/
 
 rsync -a /etc/{group,passwd,shadow}{,-} ./etc/
+sudo sed -i 's@^root.*@'$(sudo grep ^delphix ./etc/shadow | sed 's/delphix/root/')'@' ./etc/shadow
 rsync -a /etc/{shells,nsswitch.conf} ./etc/
 rsync -a /etc/network/ ./etc/network/
 rsync -a /etc/dhcp/ ./etc/dhcp/

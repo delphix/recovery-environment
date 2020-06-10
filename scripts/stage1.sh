@@ -87,6 +87,7 @@ for file in /bin/busybox /bin/kmod /bin/systemd-tmpfiles /bin/udevadm \
 	get_deps "$img/$file" "$img"
 done
 ln -rs "$img/bin/busybox" "$img/bin/sh"
+ln -rs "$img/bin/sh" "$img/bin/bash"
 
 rsync -aL "$workdir/lib64/ld-linux-x86-64.so.2" "$img/lib64/"
 mkdir -p "$img/lib/x86_64-linux-gnu/"
