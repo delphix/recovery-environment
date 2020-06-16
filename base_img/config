@@ -1,0 +1,8 @@
+EARLYHOOKS="udev"
+#
+# Hooks will be run in the order listed. Do not reorganize these without
+# proper testing.
+#
+HOOKS="udev networkd ssh"
+LATEHOOKS=""
+CLEANUPHOOKS="udev"

@@ -1,0 +1,44 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: recovery-environment
+Source: <url://example.com>
+
+Files: *
+Copyright: 2020 Delphix 
+License: GPLv2
+ This file is part of recovery-environment.
+
+ recovery-environment is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by the Free
+ Software Foundation, either version 2 of the License, or (at your option) any
+ later version.
+
+ recovery-environment is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ more details.
+
+ You should have received a copy of the GNU General Public License
+ along with mkinitcpio.  If not, see <http://www.gnu.org/licenses/>.
+
+Files: base_img/init, base_img/init_functions, base_img/hooks/*
+Copyright: 2006-2019 Thomas Bächler <thomas@archlinux.org>
+           2006-2019 Aaron Griffin <aaronmgriffin@gmail.com>
+           2006-2019 Tobias Powalowski <tpowa@archlinux.org>
+           2006-2019 Dave Reisner <dreisner@archlinux.org>
+           2006-2019 Giancarlo Razzolini <grazzolini@archlinux.org>
+           2020 Paul Dagnelie <pcd@delphix.com>
+License: GPLv2
+ This file is part of mkinitcpio.
+
+ mkinitcpio is free software: you can redistribute it and/or modify it
+ under the terms of the GNU General Public License as published by the
+ Free Software Foundation, either version 2 of the License, or (at
+ your option) any later version.
+
+ mkinitcpio is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with mkinitcpio.  If not, see <http://www.gnu.org/licenses/>.

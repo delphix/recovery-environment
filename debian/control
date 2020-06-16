@@ -1,0 +1,20 @@
+Source: recovery-environment
+Section: misc
+Priority: optional
+Maintainer: Paul Dagnelie <pcd@delphix.com>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Vcs-Git: https://github.com/delphix/recovery-environment.git
+#Vcs-Browser: https://github.com/delphix/recovery-environment
+
+Package: recovery-environment
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, delphix-kernel, delphix-platform
+Description: Compact recovery environment for cloud VM debugging
+  On modern cloud environments, it is often impossible to access a
+  serial console to gain access to a machine that has becoem stuck in
+  a boot loop. This can render a machine impossible to recover,
+  resulting loss of data and time. This package allows you to create a
+  simple recovery environment that provides a basic shell environment
+  where you can do some debugging and attmpt to resolve the machine's
+  problemms.

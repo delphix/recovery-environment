@@ -1,0 +1,9 @@
+#!/usr/bin/sh
+
+run_hook() {
+	mkdir -p /run/systemd
+	/lib/systemd/systemd-networkd &
+	export networkd_running=1
+}
+
+# vim: set ft=sh ts=4 sw=4 et:
