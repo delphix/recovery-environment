@@ -29,10 +29,4 @@ uninstall:
 	-rm -f $(DESTDIR)/etc/grub.d/42_recovery
 	-rm -f $(DESTDIR)/lib/systemd/system/delphix-bootcount.service
 
-shellcheck:
-	shellcheck --exclude=SC1090,SC1091 $$(shfmt -f .)
-
-shfmtcheck:
-	shfmt -d .
-
-.PHONY: all install clean distclean uninstall shellcheck shfmtcheck
+.PHONY: all install clean distclean uninstall
