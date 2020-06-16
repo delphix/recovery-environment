@@ -3,6 +3,7 @@
 # shellcheck disable=SC2039
 # shellcheck disable=SC2154
 # shellcheck disable=SC2086
+# shellcheck disable=SC1091
 
 export udevd_running=0
 export mount_handler=default_mount_handler

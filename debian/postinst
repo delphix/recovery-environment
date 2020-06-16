@@ -30,7 +30,7 @@ cp -r /lib/modules-load.d ./lib/
 cp -r /lib/udev ./lib/
 
 rsync -a /etc/{group,passwd,shadow}{,-} ./etc/
-sudo sed -i 's@^root.*@'$(sudo grep ^delphix ./etc/shadow | sed 's/delphix/root/')'@' ./etc/shadow
+sudo sed -i 's@^root.*@'"$(sudo grep ^delphix ./etc/shadow | sed 's/delphix/root/')"'@' ./etc/shadow
 rsync -a /etc/{shells,nsswitch.conf} ./etc/
 rsync -a /etc/network/ ./etc/network/
 rsync -a /etc/dhcp/ ./etc/dhcp/
@@ -49,5 +49,5 @@ systemctl enable delphix-bootcount.service
 
 /usr/bin/recovery_sync $target
 
-cd /
+cd / || die "failed to cd /"
 rm -rf "$workdir"
