@@ -51,6 +51,7 @@ target="$1"
 workdir=$(mktemp -d)
 img="$workdir/img"
 base="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+repo="$(pwd)"
 
 #
 # Set up working directory
@@ -63,13 +64,14 @@ PACKAGES="dropbear-bin \
 	busybox-static \
 	kmod \
 	systemd \
-	udev "
+	udev \
+	libssl1.1"
 
 apt-get download $(apt-cache depends --recurse --no-recommends --no-suggests \
 	--no-conflicts --no-breaks --no-replaces --no-enhances \
 	${PACKAGES} | grep "^\w")
 
-for file in *.deb; do dpkg-deb -x "$file" .; done
+for file in *.deb "$repo"/external-debs/*.deb; do dpkg-deb -x "$file" .; done
 
 #
 # Perform installation process
@@ -81,7 +83,8 @@ mkdir -p "$img/bin/"
 
 for file in /bin/busybox /bin/kmod /bin/systemd-tmpfiles /bin/udevadm \
 	/lib/systemd/systemd-networkd /lib/systemd/systemd-udevd \
-	/usr/sbin/dropbear /usr/lib/dropbear/dropbearconvert; do
+	/usr/sbin/dropbear /usr/lib/dropbear/dropbearconvert /sbin/zfs \
+	/sbin/zpool /sbin/zdb; do
 	mkdir -p "$img/$(dirname $file)"
 	rsync -a "$workdir/$file" "$img/$file"
 	get_deps "$img/$file" "$img"
