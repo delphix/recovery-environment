@@ -51,7 +51,7 @@ launch_interactive_shell() {
 	
 	{
 		[ "$1" = "--exec" ] && exec login $USER
-		login $USER
+		while `true`; do login $USER; done
 	}
 }
 
