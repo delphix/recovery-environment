@@ -65,11 +65,12 @@ PACKAGES="dropbear-bin \
 	kmod \
 	systemd \
 	udev \
-	libssl1.1"
+	libssl1.1 \
+	lighttpd"
 
 apt-get download $(apt-cache depends --recurse --no-recommends --no-suggests \
 	--no-conflicts --no-breaks --no-replaces --no-enhances \
-	${PACKAGES} | grep "^\w")
+	${PACKAGES} | grep "^\w" | grep -v libfam0)
 
 for file in *.deb "$repo"/external-debs/*.deb; do dpkg-deb -x "$file" .; done
 
@@ -84,7 +85,7 @@ mkdir -p "$img/bin/"
 for file in /bin/busybox /bin/kmod /bin/systemd-tmpfiles /bin/udevadm \
 	/lib/systemd/systemd-networkd /lib/systemd/systemd-udevd \
 	/usr/sbin/dropbear /usr/lib/dropbear/dropbearconvert /sbin/zfs \
-	/sbin/zpool /sbin/zdb; do
+	/sbin/zpool /sbin/zdb /usr/sbin/lighttpd; do
 	mkdir -p "$img/$(dirname $file)"
 	rsync -a "$workdir/$file" "$img/$file"
 	get_deps "$img/$file" "$img"
@@ -93,6 +94,7 @@ ln -rs "$img/bin/busybox" "$img/bin/sh"
 ln -rs "$img/bin/sh" "$img/bin/bash"
 
 rsync -aL "$workdir/lib64/ld-linux-x86-64.so.2" "$img/lib64/"
+cp -r "$workdir/usr/lib/lighttpd" "$img/usr/lib/"
 mkdir -p "$img/lib/x86_64-linux-gnu/"
 rsync -aL "$workdir"/lib/x86_64-linux-gnu/libnss* "$img/lib/x86_64-linux-gnu/"
 rsync -a "$workdir/lib/modprobe.d" "$img/lib/"
