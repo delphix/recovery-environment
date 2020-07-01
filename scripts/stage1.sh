@@ -23,7 +23,7 @@ function get_deps() {
 	#
 	# Cause ldd to search paths inside of the workdir before searching
 	# system paths. Unfortunately, we can't easily prevent ldd from
-	# searching the normal paths if it fails to find its dependecies, but
+	# searching the normal paths if it fails to find its dependencies, but
 	# that shouldn't happen as long as apt correctly derives the recursive
 	# dependency list.
 	#
