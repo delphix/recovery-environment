@@ -38,6 +38,9 @@ rsync -a /etc/dhcp/ ./etc/dhcp/
 sed -i 's@/bin/bash@/bin/sh@g' ./etc/passwd{,-}
 sed -i 's@/opt/delphix/server/bin/supportlogin@/bin/sh@g' ./etc/passwd{,-}
 
+mkdir -p ./opt/delphix/server/etc/{nginx.default,nginx}
+ln -s /opt/delphix/server/etc/nginx/nginx.conf ./etc/nginx/nginx.conf
+
 find . -print0 | cpio --null --create --format=newc | gzip -7 >"$target" 2>/dev/null
 
 mount -t zfs rpool/grub /mnt
