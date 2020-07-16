@@ -8,7 +8,7 @@ install:
 	install -D scripts/recovery_sync \
 		$(DESTDIR)$(prefix)/bin/recovery_sync
 	install -D bin/recovery.img \
-		$(DESTDIR)/boot/recovery.img
+		$(DESTDIR)/$(prefix)/share/recovery_environment/recovery.img
 	install -D scripts/42_bootcount \
 		$(DESTDIR)/etc/grub.d/42_bootcount
 	install -D scripts/42_recovery \

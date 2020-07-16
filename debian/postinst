@@ -5,13 +5,14 @@ function die() {
 	exit 1
 }
 
+base_img="/usr/share/recovery_environment/recovery.img"
 target="/boot/recovery.img"
 workdir=$(mktemp -d)
 
 cd "$workdir" || die "workdir doesn't exist"
 chown root .
 chmod 0755 .
-gunzip <"$target" | cpio -idm
+gunzip <"$base_img" | cpio -idm
 
 mknod -m 600 ./dev/console c 5 1
 
