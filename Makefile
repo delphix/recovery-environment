@@ -23,8 +23,8 @@ clean:
 distclean: clean
 
 uninstall:
-	-rm -f $(DESTDIR)$(prefix)/bin/recovery_sync
-	-rm -f $(DESTDIR)/boot/recovery.img
+	-rm -f $(DESTDIR)/$(prefix)/bin/recovery_sync
+	-rm -f $(DESTDIR)/$(prefix)/share/recovery_environment/recovery.img
 	-rm -f $(DESTDIR)/etc/grub.d/42_bootcount
 	-rm -f $(DESTDIR)/etc/grub.d/42_recovery
 	-rm -f $(DESTDIR)/lib/systemd/system/delphix-bootcount.service
