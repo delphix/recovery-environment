@@ -3,7 +3,7 @@
 #
 
 [Unit]
-Descrption=Delphix bootcount reset service
+Description=Delphix bootcount reset service
 Requires=ssh.service
 After=ssh.service
 

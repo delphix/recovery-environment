@@ -9,6 +9,11 @@
 
 set -euxo pipefail
 
+function cleanup() {
+	rm -rf "$workdir"
+	rm -f "${target}.tmp"
+}
+
 function die() {
 	echo "$1" >&2
 	exit 1
@@ -17,6 +22,7 @@ function die() {
 [[ $# -eq 1 ]] || die "Illegal number of parameters"
 target="$1"
 workdir=$(mktemp -d)
+trap cleanup EXIT
 
 cd "$workdir"
 chown root .
@@ -40,4 +46,5 @@ done
 rsync -a /etc/machine-id etc/
 rsync -a --relative /export/home/delphix/.ssh .
 
-find . -print0 | cpio --null --create --format=newc | gzip -7 >"$target"
+find . -print0 | cpio --null --create --format=newc | gzip -7 >"${target}.tmp"
+mv "${target}.tmp" "$target"
