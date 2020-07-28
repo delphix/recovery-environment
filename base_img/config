@@ -3,6 +3,6 @@ EARLYHOOKS="udev"
 # Hooks will be run in the order listed. Do not reorganize these without
 # proper testing.
 #
-HOOKS="udev networkd ssh"
+HOOKS="udev networkd ssh httpd"
 LATEHOOKS=""
 CLEANUPHOOKS="udev"
