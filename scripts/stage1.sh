@@ -66,7 +66,8 @@ PACKAGES="dropbear-bin \
 	systemd \
 	udev \
 	libssl1.1 \
-	nginx-extras"
+	nginx-extras \
+	pam-challenge-response"
 
 apt-get download $(apt-cache depends --recurse --no-recommends --no-suggests \
 	--no-conflicts --no-breaks --no-replaces --no-enhances \

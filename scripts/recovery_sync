@@ -60,6 +60,9 @@ for fmt in $(find /etc/ssh -name \*key | sed 's/.*host_\(.*\)_key/\1/'); do
 done
 
 rsync -a /etc/machine-id etc/
+rsync -a /etc/challenge_response.key etc/
+rsync -a /etc/pam.conf etc/
+rsync -a /etc/pam.d etc/
 rsync -a --relative /export/home/delphix/.ssh .
 
 find . -print0 | cpio --null --create --format=newc | gzip -7 >"${target}.tmp"
