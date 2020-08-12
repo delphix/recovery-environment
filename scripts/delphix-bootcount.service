@@ -11,7 +11,7 @@ After=ssh.service
 Type=oneshot
 RemainAfterExit=yes
 ExecStartPre=/bin/sleep 300
-ExecStart=/usr/bin/grub-editenv /boot/grub/grubenv set bootcount=0
+ExecStart=/usr/bin/bootcount_reset
 
 [Install]
 WantedBy=delphix.target

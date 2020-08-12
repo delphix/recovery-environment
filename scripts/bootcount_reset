@@ -1,0 +1,10 @@
+#!/bin/bash
+
+function die() {
+	echo "$1" >&2
+	exit 1
+}
+
+/usr/bin/grub-editenv /boot/grub/grubenv set bootcount=0 && exit 0
+/usr/bin/grub-editenv /boot/grub/grubenv create || die "Could not create grubenv"
+/usr/bin/grub-editenv /boot/grub/grubenv set bootcount=0 || die "Could not set boot count to zero"
