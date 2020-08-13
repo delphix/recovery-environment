@@ -6,6 +6,7 @@
 Description=Delphix bootcount reset service
 Requires=ssh.service
 After=ssh.service
+ConditionVirtualization=!container
 
 [Service]
 Type=oneshot
