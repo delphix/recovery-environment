@@ -5,6 +5,8 @@ all:
 	./scripts/stage1.sh $(CURDIR)/bin/recovery.img
 
 install:
+	install -D scripts/bootcount_reset \
+		$(DESTDIR)$(prefix)/bin/bootcount_reset
 	install -D scripts/recovery_sync \
 		$(DESTDIR)$(prefix)/bin/recovery_sync
 	install -D bin/recovery.img \
@@ -23,6 +25,7 @@ clean:
 distclean: clean
 
 uninstall:
+	-rm -f $(DESTDIR)/$(prefix)/bin/bootcount_reset
 	-rm -f $(DESTDIR)/$(prefix)/bin/recovery_sync
 	-rm -f $(DESTDIR)/$(prefix)/share/recovery_environment/recovery.img
 	-rm -f $(DESTDIR)/etc/grub.d/42_bootcount
