@@ -6,12 +6,13 @@
 Description=Delphix bootcount reset service
 Requires=ssh.service
 After=ssh.service
+ConditionVirtualization=!container
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 ExecStartPre=/bin/sleep 300
-ExecStart=/usr/bin/grub-editenv /boot/grub/grubenv set bootcount=0
+ExecStart=/usr/bin/bootcount_reset
 
 [Install]
 WantedBy=delphix.target
