@@ -5,6 +5,17 @@ set -e
 
 . /usr/lib/grub/grub-mkconfig_lib
 
+#
+# Determine the latest installed kernel version, and use that version as the
+# kernel for the recovery environment.
+#
+list=
+for i in /boot/vmlinuz-* /vmlinuz-* /boot/kernel-*; do
+	if grub_file_is_not_garbage "$i"; then list="$list $i"; fi
+done
+linux=$(version_find_latest "$list")
+basename=$(basename "$linux")
+
 cat <<EOF
 menuentry 'Recovery Environment' --class ubuntu --class gnu-linux --class gnu --class os --id 'recovery' {
     recordfail
@@ -20,7 +31,7 @@ root=$(findmnt / | grep '^/' | awk '{print $2}' | sed 's@^rpool/@@')
 
 cat <<EOF
     echo    'Loading recovery environment'
-    linux   /${root}@/boot/vmlinuz-$(uname -r)  root=ZFS=rpool/$root ro single nomodeset console=tty0 console=ttyS0,38400n8 break=y
+    linux   /${root}@/boot/${basename}  root=ZFS=rpool/$root ro single nomodeset console=tty0 console=ttyS0,38400n8 break=y
     initrd  /${root}@/boot/recovery.img
 }
 EOF

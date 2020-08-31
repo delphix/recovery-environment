@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1091
 
 function die() {
 	echo "$1" >&2
@@ -16,7 +17,20 @@ gunzip <"$base_img" | cpio -idm
 
 mknod -m 600 ./dev/console c 5 1
 
-modpath="/lib/modules/$(uname -r)/"
+. /usr/lib/grub/grub-mkconfig_lib
+
+#
+# Determine the latest installed kernel version, and sync kernel modules for
+# that version into the recovery environment.
+#
+list=
+for i in /boot/vmlinuz-* /vmlinuz-* /boot/kernel-*; do
+	if grub_file_is_not_garbage "$i"; then list="$list $i"; fi
+done
+linux=$(version_find_latest "$list")
+basename=$(basename "$linux")
+
+modpath="/lib/modules/${basename#vmlinuz-}"
 mkdir -p "./$modpath/kernel/drivers/"
 rsync -a "/$modpath"/modules* "./$modpath/"
 rsync -a "/$modpath/vdso" "./$modpath/"
