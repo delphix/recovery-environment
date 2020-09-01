@@ -24,7 +24,7 @@ mknod -m 600 ./dev/console c 5 1
 # that version into the recovery environment.
 #
 list=
-for i in /boot/vmlinuz-* /vmlinuz-* /boot/kernel-*; do
+for i in /boot/vmlinuz-*; do
 	if grub_file_is_not_garbage "$i"; then list="$list $i"; fi
 done
 linux=$(version_find_latest "$list")
