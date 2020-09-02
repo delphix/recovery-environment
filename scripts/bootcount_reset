@@ -6,5 +6,8 @@ function die() {
 }
 
 /usr/bin/grub-editenv /boot/grub/grubenv set bootcount=0 2>/dev/null && exit 0
+
+# Perform firstboot/corruption case logic
 /usr/bin/grub-editenv /boot/grub/grubenv create || die "Could not create grubenv"
 /usr/bin/grub-editenv /boot/grub/grubenv set bootcount=0 || die "Could not set boot count to zero"
+/usr/bin/recovery_sync /boot/recovery.img || die "could not sync recovery environment"
