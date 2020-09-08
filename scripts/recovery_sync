@@ -30,6 +30,7 @@ chmod 0755 .
 gunzip <"$target" | cpio -idm
 
 rsync -a /run/systemd/network/ etc/systemd/network
+rsync -a /lib/systemd/network/ lib/systemd/network
 mkdir -p etc/dropbear
 rsync -a /opt/delphix/server/etc/nginx.default ./opt/delphix/server/etc/
 rsync -a /opt/delphix/server/etc/nginx ./opt/delphix/server/etc/
