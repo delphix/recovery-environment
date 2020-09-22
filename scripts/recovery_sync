@@ -33,20 +33,28 @@ rsync -a /run/systemd/network/ etc/systemd/network
 rsync -a /lib/systemd/network/ lib/systemd/network
 mkdir -p etc/dropbear
 rsync -a /opt/delphix/server/etc/nginx.default ./opt/delphix/server/etc/
-rsync -a /opt/delphix/server/etc/nginx ./opt/delphix/server/etc/
 
 #
-# Delete the access logging from the nginx recovery environment, since the
-# logs won't persist after reboot anyway.
+# Before first engine startup, this directory doesn't exist. We should allow
+# this command to fail without stopping the sync.
 #
-sed -i '/_log /d' ./opt/delphix/server/etc/nginx/nginx.conf
+if [[ -d /opt/delphix/server/etc/nginx ]]; then
+	rsync -a /opt/delphix/server/etc/nginx ./opt/delphix/server/etc/
 
-#
-# Modify the nginx config to load the recovery environment's server outage
-# message instead of the normal Delphix Engine config files.
-#
-sed -i 's@include /opt/delphix/server/etc/nginx/conf.d/\*;@root /var/www/;@' \
-	./opt/delphix/server/etc/nginx/nginx.conf
+	#
+	# Delete the access logging from the nginx recovery environment, since
+	# the logs won't persist after reboot anyway.
+	#
+	sed -i '/_log /d' ./opt/delphix/server/etc/nginx/nginx.conf
+
+	#
+	# Modify the nginx config to load the recovery environment's server
+	# outage message instead of the normal Delphix Engine config files.
+	#
+	sed -i 's@include /opt/delphix/server/etc/nginx/conf.d/\*;@root /var/www/;@' \
+		./opt/delphix/server/etc/nginx/nginx.conf
+
+fi
 
 #
 # Dropbear reads keys in a different format from the normal ssh server. We
