@@ -58,9 +58,7 @@ ln -s /opt/delphix/server/etc/nginx/nginx.conf ./etc/nginx/nginx.conf
 
 find . -print0 | cpio --null --create --format=newc | gzip -7 >"$target" 2>/dev/null
 
-mount -t zfs rpool/grub /mnt
-/usr/sbin/grub-mkconfig -o /mnt/boot/grub/grub.cfg
-umount /mnt
+/usr/sbin/grub-mkconfig
 
 grub-editenv /boot/grub/grubenv create
 grub-editenv /boot/grub/grubenv set bootcount=0
