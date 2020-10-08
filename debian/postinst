@@ -58,8 +58,6 @@ ln -s /opt/delphix/server/etc/nginx/nginx.conf ./etc/nginx/nginx.conf
 
 find . -print0 | cpio --null --create --format=newc | gzip -7 >"$target" 2>/dev/null
 
-/usr/sbin/grub-mkconfig
-
 grub-editenv /boot/grub/grubenv create
 grub-editenv /boot/grub/grubenv set bootcount=0
 systemctl enable delphix-bootcount.service
