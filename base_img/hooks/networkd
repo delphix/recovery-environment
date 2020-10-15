@@ -3,6 +3,7 @@
 run_hook() {
 	mkdir -p /run/systemd
 	/lib/systemd/systemd-networkd &
+	/lib/systemd/systemd-resolved &
 	export networkd_running=1
 }
 
