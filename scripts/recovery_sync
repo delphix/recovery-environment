@@ -71,5 +71,6 @@ done
 rsync -a /etc/machine-id etc/
 rsync -a --relative /export/home/delphix/.ssh .
 
-find . -print0 | cpio --null --create --format=newc | gzip -7 >"${target}.tmp"
-mv "${target}.tmp" "$target"
+tmpfile=$(mktemp "${target}.XXXXX")
+find . -print0 | cpio --null --create --format=newc | gzip -7 >"$tmpfile"
+mv "$tmpfile" "$target"
