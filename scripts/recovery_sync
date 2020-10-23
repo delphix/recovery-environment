@@ -24,6 +24,17 @@ target="$1"
 workdir=$(mktemp -d)
 trap cleanup EXIT
 
+#
+# When syncing the recovery environment, we want to ensure that only a single
+# process is attempting to do this at any given time.  Thus, we add some
+# locking in case multiple processes call this script concurrently; to prevent
+# accidental corruption and/or failures.
+#
+if [[ "${SYNC_EXECUTE_LOCKED:-x}" != "true" ]]; then
+	exec env SYNC_EXECUTE_LOCKED="true" \
+		flock -e "/var/run/delphix-sync-execute-lock" "$0" "$@"
+fi
+
 cd "$workdir"
 chown root .
 chmod 0755 .
