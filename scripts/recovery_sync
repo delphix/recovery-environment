@@ -20,9 +20,6 @@ function die() {
 }
 
 [[ $# -eq 1 ]] || die "Illegal number of parameters"
-target="$1"
-workdir=$(mktemp -d)
-trap cleanup EXIT
 
 #
 # When syncing the recovery environment, we want to ensure that only a single
@@ -30,10 +27,14 @@ trap cleanup EXIT
 # locking in case multiple processes call this script concurrently; to prevent
 # accidental corruption and/or failures.
 #
-if [[ "${SYNC_EXECUTE_LOCKED:-x}" != "true" ]]; then
-	exec env SYNC_EXECUTE_LOCKED="true" \
-		flock -e "/var/run/delphix-sync-execute-lock" "$0" "$@"
+if [[ "${RECOVERY_SYNC_LOCKED:-x}" != "true" ]]; then
+	exec env RECOVERY_SYNC_LOCKED="true" \
+		flock -e "/var/run/delphix-recovery-env-sync-lock" "$0" "$@"
 fi
+
+target="$1"
+workdir=$(mktemp -d)
+trap cleanup EXIT
 
 cd "$workdir"
 chown root .
