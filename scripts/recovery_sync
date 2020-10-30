@@ -20,6 +20,18 @@ function die() {
 }
 
 [[ $# -eq 1 ]] || die "Illegal number of parameters"
+
+#
+# When syncing the recovery environment, we want to ensure that only a single
+# process is attempting to do this at any given time.  Thus, we add some
+# locking in case multiple processes call this script concurrently; to prevent
+# accidental corruption and/or failures.
+#
+if [[ "${RECOVERY_SYNC_LOCKED:-x}" != "true" ]]; then
+	exec env RECOVERY_SYNC_LOCKED="true" \
+		flock -e "/var/run/delphix-recovery-env-sync-lock" "$0" "$@"
+fi
+
 target="$1"
 workdir=$(mktemp -d)
 trap cleanup EXIT
@@ -63,5 +75,6 @@ done
 rsync -a /etc/machine-id etc/
 rsync -a --relative /export/home/delphix/.ssh .
 
-find . -print0 | cpio --null --create --format=newc | gzip -7 >"${target}.tmp"
-mv "${target}.tmp" "$target"
+tmpfile=$(mktemp "${target}.XXXXX")
+find . -print0 | cpio --null --create --format=newc | gzip -7 >"$tmpfile"
+mv "$tmpfile" "$target"
