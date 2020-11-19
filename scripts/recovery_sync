@@ -72,7 +72,8 @@ for fmt in $(find /etc/ssh -name \*key | sed 's/.*host_\(.*\)_key/\1/'); do
 		"etc/dropbear/dropbear_${fmt}_host_key"
 done
 
-rsync -a /etc/machine-id etc/
+rsync -a /etc/{machine-id,resolv.conf} etc/
+rsync -a /etc/systemd/ etc/systemd
 rsync -a --relative /export/home/delphix/.ssh .
 
 tmpfile=$(mktemp "${target}.XXXXX")
