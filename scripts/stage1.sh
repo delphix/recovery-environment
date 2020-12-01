@@ -83,7 +83,7 @@ rsync -a ../base_img/ "$img/"
 mkdir -p "$img/bin/"
 
 for file in /bin/busybox /bin/kmod /bin/systemd-tmpfiles /bin/udevadm \
-	/lib/systemd/systemd-networkd /lib/systemd/systemd-udevd \
+	/lib/systemd/systemd-networkd /lib/systemd/systemd-udevd /lib/systemd/systemd-resolved \
 	/usr/sbin/dropbear /usr/lib/dropbear/dropbearconvert /sbin/zfs \
 	/sbin/zpool /sbin/zdb /usr/sbin/nginx; do
 	mkdir -p "$img/$(dirname $file)"
