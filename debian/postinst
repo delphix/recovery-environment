@@ -37,7 +37,9 @@ rsync -a "/$modpath/vdso" "./$modpath/"
 rsync -a "/$modpath/extra" "./$modpath/"
 rsync -a "/$modpath/kernel/drivers" "./$modpath/kernel/"
 
-if [[ $(cat /var/lib/delphix-appliance/platform) == "gcp" ]]; then
+if [[ $(cat /var/lib/delphix-appliance/platform) == "gcp" || \
+    $(cat /var/lib/delphix-appliance/platform) == "oci" || \
+    $(cat /var/lib/delphix-appliance/platform) == "kvm" ]]; then
 	rsync -a "/$modpath/kernel/net/" "./$modpath/kernel/net/"
 fi
 
