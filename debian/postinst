@@ -37,9 +37,11 @@ rsync -a "/$modpath/vdso" "./$modpath/"
 rsync -a "/$modpath/extra" "./$modpath/"
 rsync -a "/$modpath/kernel/drivers" "./$modpath/kernel/"
 
-if [[ $(cat /var/lib/delphix-appliance/platform) == "gcp" ]]; then
-	rsync -a "/$modpath/kernel/net/" "./$modpath/kernel/net/"
-fi
+case "$(cat /var/lib/delphix-appliance/platform)" in
+gcp | kvm | oci) rsync -a "/$modpath/kernel/net/" "./$modpath/kernel/net/" ;;
+esx | aws | azure | hyperv) echo "Skipping copying kernel/net drivers" ;;
+*) die "Unrecognized platform detected" ;;
+esac
 
 rm -rf "./$modpath/kernel/drivers/net/wireless"
 cp -r /lib/modules-load.d ./lib/
