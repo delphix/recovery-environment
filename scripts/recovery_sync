@@ -75,9 +75,19 @@ fi
 for fmt in $(find /etc/ssh -name \*key | sed 's/.*host_\(.*\)_key/\1/'); do
 	# Unfortunately, dropbear doesn't support ed25519 keys.
 	[[ "$fmt" == "ed25519" ]] && continue
+	#
+	# On Ubuntu 20.04, ssh-keygen generates OpenSSH private keys by default,
+	# which have a header that is not supported by dropbearconvert. As a
+	# workaround, we first use ssh-keygen to convert they key to the older
+	# PEM format, and then feed that temporary key to dropbearconvert.
+	# Note that this bug has been fixed in a later version of
+	# dropbearconvert but that version is not available on Ubuntu 20.04.
+	#
+	cp "/etc/ssh/ssh_host_${fmt}_key" tmp.key
+	ssh-keygen -p -f tmp.key -N '' -P '' -m PEM
 	LD_LIBRARY_PATH="./usr/lib/x86_64-linux-gnu" ./usr/lib/dropbear/dropbearconvert \
-		openssh dropbear "/etc/ssh/ssh_host_${fmt}_key" \
-		"etc/dropbear/dropbear_${fmt}_host_key"
+		openssh dropbear tmp.key "etc/dropbear/dropbear_${fmt}_host_key"
+	rm tmp.key
 done
 
 rsync -a /etc/{machine-id,resolv.conf} etc/
