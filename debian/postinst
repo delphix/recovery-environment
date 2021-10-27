@@ -67,12 +67,6 @@ find . -print0 | cpio --null --create --format=newc | gzip -7 >"$target" 2>/dev/
 # when doing an upgrade inside a container. As a result, we do not run
 # mkconfig in this script, and rely on the end-of-upgrade scripts to do it.
 #
-# Similary, the environment block in the bootloader is set by the bootcount
-# service after first boot, and the recovery environment will be synced when a
-# configuration change is made.
-#
-
-systemctl enable delphix-bootcount.service
 
 cd / || die "failed to cd /"
 rm -rf "$workdir"
