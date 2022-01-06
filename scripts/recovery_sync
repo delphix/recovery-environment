@@ -11,7 +11,7 @@ set -euxo pipefail
 
 function cleanup() {
 	rm -rf "$workdir"
-	rm -f "${target}.tmp"
+	[[ -n "$tmpfile" ]] && rm -f "$tmpfile"
 }
 
 function die() {
