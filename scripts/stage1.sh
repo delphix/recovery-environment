@@ -42,7 +42,7 @@ function get_deps() {
 		local dn=""
 		dn=$(dirname "$dep")
 		mkdir -p "$output/$dn"
-		rsync -aL "$workdir/$dep" "$output/$dep"
+		rsync -aKL "$workdir/$dep" "$output/$dep"
 	done
 }
 
@@ -72,35 +72,48 @@ apt-get download $(apt-cache depends --recurse --no-recommends --no-suggests \
 	--no-conflicts --no-breaks --no-replaces --no-enhances \
 	${PACKAGES} | grep "^\w")
 
-for file in *.deb "$repo"/external-debs/*.deb; do dpkg-deb -x "$file" .; done
+#
+# Starting with Ubuntu 20.04, several top level directories symlink into /usr.
+# See https://wiki.debian.org/UsrMerge for more info.
+#
+for dir in bin lib lib32 lib64 libx32 sbin; do
+	mkdir -p "usr/$dir"
+	ln -s "usr/$dir" "$dir"
+	mkdir -p "$img/usr/$dir"
+	ln -s "usr/$dir" "$img/$dir"
+done
+
+mkdir pkgs
+for file in *.deb "$repo"/external-debs/*.deb; do dpkg-deb -x "$file" pkgs; done
+
+rsync -aK pkgs/ .
 
 #
 # Perform installation process
 #
 cd "$base"
-rsync -a ../base_img/ "$img/"
 
-mkdir -p "$img/bin/"
+rsync -aK ../base_img/ "$img/"
 
 for file in /bin/busybox /bin/kmod /bin/systemd-tmpfiles /bin/udevadm \
 	/lib/systemd/systemd-networkd /lib/systemd/systemd-udevd /lib/systemd/systemd-resolved \
 	/usr/sbin/dropbear /usr/lib/dropbear/dropbearconvert /sbin/zfs \
 	/sbin/zpool /sbin/zdb /usr/sbin/nginx; do
 	mkdir -p "$img/$(dirname $file)"
-	rsync -a "$workdir/$file" "$img/$file"
+	rsync -aK "$workdir/$file" "$img/$file"
 	get_deps "$img/$file" "$img"
 done
 ln -rs "$img/bin/busybox" "$img/bin/sh"
 ln -rs "$img/bin/sh" "$img/bin/bash"
 
-rsync -aL "$workdir/lib64/ld-linux-x86-64.so.2" "$img/lib64/"
+rsync -aKL "$workdir/lib64/ld-linux-x86-64.so.2" "$img/lib64/"
 mkdir -p "$img/usr/share/nginx"
-rsync -aL "$workdir/usr/share/nginx/modules" "$img/usr/share/nginx/"
-rsync -aL "$workdir/etc/nginx" "$img/etc/"
+rsync -aKL "$workdir/usr/share/nginx/modules" "$img/usr/share/nginx/"
+rsync -aKL "$workdir/etc/nginx" "$img/etc/"
 rm "$img/etc/nginx/nginx.conf"
 mkdir -p "$img/lib/x86_64-linux-gnu/"
-rsync -aL "$workdir"/lib/x86_64-linux-gnu/libnss* "$img/lib/x86_64-linux-gnu/"
-rsync -a "$workdir/lib/modprobe.d" "$img/lib/"
+rsync -aKL "$workdir"/lib/x86_64-linux-gnu/libnss* "$img/lib/x86_64-linux-gnu/"
+rsync -aK "$workdir/lib/modprobe.d" "$img/lib/"
 
 mkdir -p "$img"/etc/{systemd/network,network,dhcp}
 mkdir -p "$img/etc/dropbear"
