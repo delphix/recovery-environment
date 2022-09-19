@@ -85,7 +85,8 @@ for fmt in $(find /etc/ssh -name \*key | sed 's/.*host_\(.*\)_key/\1/'); do
 	#
 	cp "/etc/ssh/ssh_host_${fmt}_key" tmp.key
 	ssh-keygen -p -f tmp.key -N '' -P '' -m PEM
-	LD_LIBRARY_PATH="./usr/lib/x86_64-linux-gnu" ./usr/lib/dropbear/dropbearconvert \
+	arch_triple="$(dpkg-architecture -q DEB_HOST_MULTIARCH)"
+	LD_LIBRARY_PATH="./usr/lib/$arch_triple" ./usr/lib/dropbear/dropbearconvert \
 		openssh dropbear tmp.key "etc/dropbear/dropbear_${fmt}_host_key"
 	rm tmp.key
 done
