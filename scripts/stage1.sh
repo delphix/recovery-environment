@@ -106,13 +106,16 @@ done
 ln -rs "$img/bin/busybox" "$img/bin/sh"
 ln -rs "$img/bin/sh" "$img/bin/bash"
 
-rsync -aKL "$workdir/lib64/ld-linux-x86-64.so.2" "$img/lib64/"
+loader_path="$(readelf -l /bin/ls | grep 'Requesting' | cut -d':' -f2 | tr -d ' ]')"
+arch_triple="$(dpkg-architecture -q DEB_HOST_MULTIARCH)"
+
+rsync -aKL "$workdir/$loader_path" "$img/$(dirname $loader_path)"
 mkdir -p "$img/usr/share/nginx"
 rsync -aKL "$workdir/usr/share/nginx/modules" "$img/usr/share/nginx/"
 rsync -aKL "$workdir/etc/nginx" "$img/etc/"
 rm "$img/etc/nginx/nginx.conf"
-mkdir -p "$img/lib/x86_64-linux-gnu/"
-rsync -aKL "$workdir"/lib/x86_64-linux-gnu/libnss* "$img/lib/x86_64-linux-gnu/"
+mkdir -p "$img/lib/$arch_triple/"
+rsync -aKL "$workdir/lib/$arch_triple"/libnss* "$img/lib/$arch_triple/"
 rsync -aK "$workdir/lib/modprobe.d" "$img/lib/"
 
 mkdir -p "$img"/etc/{systemd/network,network,dhcp}
