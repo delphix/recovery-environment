@@ -29,7 +29,7 @@ function get_deps() {
 	#
 	sudo rm /etc/ld.so.cache
 	sudo ldconfig
-	(LD_LIBRARY_PATH="$(ldconfig -v 2>/dev/null | grep -v ^$'\t' | sed "s@^@$workdir@" | tr -d '\n'):$workdir/lib/systemd" \
+	(LD_LIBRARY_PATH="$(ldconfig -v 2>/dev/null | grep -v ^$'\t' | sed "s@^@$workdir@" | cut -d':' -f1 | paste -sd':' | tr -d '\n'):$workdir/usr/lib/x86_64-linux-gnu/systemd" \
 		ldd "$binary" 2>/dev/null || true) | while read -r line; do
 		if ! echo "$line" | grep "=>" &>/dev/null; then
 			continue
@@ -64,6 +64,7 @@ PACKAGES="dropbear-bin \
 	busybox-static \
 	kmod \
 	systemd \
+	systemd-resolved \
 	udev \
 	libssl1.1 \
 	nginx-extras"
